@@ -11,7 +11,6 @@
  */
 
 import React, { Component } from 'react';
-import { Redirect } from 'react-router';
 import withAuth from './withAuth';
 
 export default withAuth(class ImplicitCallback extends Component {
@@ -33,14 +32,12 @@ export default withAuth(class ImplicitCallback extends Component {
   render() {
     if (this.state.authenticated === null) {
       return null;
+    } else {
+      const referrerKey = 'secureRouterReferrerPath';
+      const pathname = localStorage.getItem(referrerKey) || '/';
+      localStorage.removeItem(referrerKey);
+      this.props.history.replace(pathname);
+      return null;
     }
-
-    const referrerKey = 'secureRouterReferrerPath';
-    const pathname = localStorage.getItem(referrerKey) || '/';
-    localStorage.removeItem(referrerKey);
-
-    return this.state.authenticated ? 
-      <Redirect push to={{ pathname }}/> :
-      <p>{this.state.error}</p>;
   }
 });
